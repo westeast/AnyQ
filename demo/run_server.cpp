@@ -13,11 +13,13 @@
 // limitations under the License.
 
 #include <glog/logging.h>
+#include <gflags/gflags.h>
 #include "server/http_server.h"
 #include "common/utils.h"
 #include "common/plugin_header.h"
 
 int main(int argc, char* argv[]) {
+    GFLAGS_NAMESPACE::ParseCommandLineFlags(&argc, &argv, true);
     google::InitGoogleLogging(argv[0]);
     FLAGS_stderrthreshold = google::INFO;
     anyq::HttpServer server;

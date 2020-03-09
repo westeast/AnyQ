@@ -21,7 +21,7 @@ else
 fi
 
 # set solr dir
-SOLR_HOME=./solr-4.10.3-anyq
+[[ $2 ]] && SOLR_HOME=$2 || SOLR_HOME=./solr-4.10.3-anyq/
 SOLR_SERVER=${SCRIPT_PATH}/solr_deply.sh
 SOLR_API=${SCRIPT_PATH}/solr_api.py
 ENGINE_HOST=localhost

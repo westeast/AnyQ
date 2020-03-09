@@ -14,6 +14,7 @@ SET(THIRD_PARTY_PATH "${CMAKE_BINARY_DIR}/third_party" CACHE STRING
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 option(USE_TENSORFLOW "use tensorflow rather than paddle" OFF)
+option(MIN_COMPILE "min compile" OFF)
 
 if(USE_TENSORFLOW)
     set(TENSORFLOW_TAG "-DUSE_TENSORFLOW")
@@ -67,7 +68,7 @@ link_directories(
     ${THIRD_PARTY_PATH}/lib
 )
 
-set(CMAKE_CXX_FLAGS "-g -pipe -W -Wall -fPIC -std=c++11 -mfpmath=sse -msse -msse2 -msse3 -fopenmp") 
+set(CMAKE_CXX_FLAGS "-g -pipe -w -Wno-unused-parameter -Wno-unused-variable -fPIC -std=c++11 -mfpmath=sse -msse -msse2 -msse3 -fopenmp") 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-Bsymbolic -rdynamic -zmuldefs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TENSORFLOW_TAG}")
 
@@ -80,21 +81,25 @@ foreach(PROTO_FILE ${PROTOS})
     LIST(APPEND SRCS ${PROTO_CPP})
 endforeach()
 
-SET_SOURCE_FILES_PROPERTIES(${SRCS} PROPERTIES GENERATED TRUE)
+#SET_SOURCE_FILES_PROPERTIES(${SRCS} PROPERTIES GENERATED TRUE)
 
 add_library(anyq STATIC ${SRCS})
 
-add_dependencies(anyq 
-    extern_curl
-    extern_boost 
-    extern_eigen 
-    extern_gtest 
-    extern_brpc
-    extern_jsoncpp
-    extern_xgboost
-    extern_paddle
-    extern_lac
-    proto_build)
+if(MIN_COMPILE)
+    #add_dependencies(anyq proto_build)
+else()
+    add_dependencies(anyq 
+        extern_curl
+        extern_boost 
+        extern_eigen 
+        extern_gtest 
+        extern_brpc
+        extern_jsoncpp
+        extern_xgboost
+        extern_paddle
+        extern_lac
+        proto_build)
+endif()
 
 if(USE_TENSORFLOW)
     add_dependencies(anyq extern_tensorflow)
